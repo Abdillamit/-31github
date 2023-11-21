@@ -1,5 +1,6 @@
 import bg from "@/app/img/NL-en-20231113-popsignuptwoweeks-perspective_alpha_website_medium.jpg";
 import { Button } from "@/components/ui/button";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { AiFillGithub } from "react-icons/ai";
 
@@ -17,6 +18,7 @@ export default function login() {
         <div className={"flex h-full items-center justify-center flex-col "}>
           <h1 className={"text-4xl font-bold"}>Login</h1>
           <Button
+            onClick={() => signIn("github")}
             className={
               "mt-4 flex items-center gap-2 w-full h-[56px] bg-red-600  !text-white hover:bg-red-500"
             }

@@ -5,9 +5,9 @@ import { LockKeyhole, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent } from "../ui/dialog";
-import LoginAccauntForm from "../form/LoginAccauntForm";
-import CreateAccauntForm from "../form/CreateAccauntForm";
-export default function ManageAccaunt() {
+import LoginAccountForm from "../form/LoginAccountForm";
+import CreateAccountForm from "../form/CreateAccountForm";
+export default function ManageAccount() {
   const [isDelete, setIsDelete] = useState<Boolean>(false);
   const [open, setOpen] = useState<Boolean>(false);
   const [state, setState] = useState<"login" | "create">("create");
@@ -77,8 +77,8 @@ export default function ManageAccaunt() {
 
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
-            {state === "login" && <LoginAccauntForm />}
-            {state === "create" && <CreateAccauntForm />}
+            {state === "login" && <LoginAccountForm />}
+            {state === "create" && <CreateAccountForm />}
           </DialogContent>
         </Dialog>
       </div>

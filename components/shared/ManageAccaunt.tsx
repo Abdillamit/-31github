@@ -29,7 +29,7 @@ export default function ManageAccount() {
               setState("login");
             }}
             className={
-              "max-w-[200px] w-[155px] cursor-ppointer155px flex flex-col items-center gap-3 min-w-[200px]"
+              "max-w-[200px] w-[155px] cursor-pointer155px flex flex-col items-center gap-3 min-w-[200px]"
             }
           >
             <div className={"relative"}>

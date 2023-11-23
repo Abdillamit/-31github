@@ -7,7 +7,13 @@ export default function LoginAccauntForm() {
   const [pin, setPin] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = (value: string) => {};
+  const onSubmit = (value: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+    console.log(value);
+  };
 
   return (
     <>

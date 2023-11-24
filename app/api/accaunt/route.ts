@@ -27,12 +27,65 @@ export async function POST(req: Request) {
       });
     }
 
-    const hashPin = await  hash(pin,10);
+    const hashPin = await hash(pin, 10);
 
-    const account = await Account.create({ name, pin, hashPin,  uid });
+    const account = await Account.create({ name, pin, hashPin, uid });
 
     return NextResponse.json({ account });
   } catch (e) {
     return NextResponse.json({ success: false, message: "Hello, world!" });
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    await connectToDatabase();
+
+    const { searchParams } = new URL(req.url);
+    const uid = searchParams.get("uid");
+
+    if (!uid) {
+      return NextResponse.json({
+        success: false,
+        message: "Account not found",
+      });
+    }
+
+    const accounts = await Account.find({ uid });
+
+    return NextResponse.json({ success: true, accounts });
+  } catch (error) {
+    return NextResponse.json({
+      success: true,
+      message: "Something went wrongs",
+    });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    await connectToDatabase();
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({
+        success: false,
+        message: "Account not found",
+      });
+    }
+
+    await Account.findByIdAndDelete({ id });
+
+    return NextResponse.json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      message: "Something went wrongs",
+    });
   }
 }

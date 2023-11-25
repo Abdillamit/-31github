@@ -1,16 +1,30 @@
 import Image from "next/image";
 import avatar from "@/app/img/netflix-profile-pictures-5yup5hd2i60x7ew3.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LockKeyhole, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent } from "../ui/dialog";
 import LoginAccountForm from "../form/LoginAccountForm";
 import CreateAccountForm from "../form/CreateAccountForm";
+import { AccauntProps } from "@/types";
+import axios from "axios";
+
 export default function ManageAccount() {
   const [isDelete, setIsDelete] = useState<Boolean>(false);
   const [open, setOpen] = useState<Boolean>(false);
   const [state, setState] = useState<"login" | "create">("create");
+  const [account, setAccount] = useState<AccauntProps[]>([]);
+
+  useEffect(() => {
+    const getAllAccounts = async () => {
+      try {
+        const { data } = await axios.get("/api/account");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  }, []);
 
   return (
     <div

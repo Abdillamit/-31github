@@ -1,11 +1,12 @@
 import { Dispatch, ReactNode, SetStateAction } from "react";
+import { AxiosResponse } from "./index.d";
 
 export interface ContextType {
-  accaunt: AccauntProps | null;
-  setAccaunt: Dispatch<SetStateAction<AccauntProps | null>>;
+  accaunt: AccountProps | null;
+  setAccaunt: Dispatch<SetStateAction<AccountProps | null>>;
 }
 
-export interface AccauntProps {
+export interface AccountProps {
   _id: string;
   uid: string;
   name: string;
@@ -18,4 +19,9 @@ export interface ChildProps {
 
 export interface AxiosResponse {
   success: boolean;
+  metadata?: string;
+}
+
+export interface AccountResponse extends AxiosResponse {
+  data: AccountProps[];
 }

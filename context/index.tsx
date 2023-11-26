@@ -1,11 +1,11 @@
 "use client";
-import { AccauntProps, ChildProps, ContextType } from "@/types";
+import { AccountProps, ChildProps, ContextType } from "@/types";
 import { createContext, useContext, useState } from "react";
 
 export const Context = createContext<ContextType | null>(null);
 
 export default function GlobalContext({ children }: ChildProps) {
-  const [accaunt, setAccaunt] = useState<AccauntProps | null>(null);
+  const [accaunt, setAccaunt] = useState<AccountProps | null>(null);
   return (
     <Context.Provider value={{ accaunt, setAccaunt }}>
       {children}

@@ -12,12 +12,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { createAccountSchema } from "@/lib/Validation";
+import { AccountResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import PinInput from "react-pin-input";
 import * as z from "zod";
+import { toast } from "@/components/ui/use-toast";
 
-const CreateAccountForm = () => {
+interface Props {
+  uid: string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const CreateAccountForm = ({ uid, setOpen }: Props) => {
   const form = useForm<z.infer<typeof createAccountSchema>>({
     resolver: zodResolver(createAccountSchema),
     defaultValues: { name: "", pin: "" },
@@ -26,7 +35,26 @@ const CreateAccountForm = () => {
   const { isSubmitting } = form.formState;
 
   async function onSubmit(values: z.infer<typeof createAccountSchema>) {
-    console.log(values);
+    try {
+      const { data } = await axios.post<AccountResponse>("/api/account", {
+        ...values,
+        uid,
+      });
+      if (data.success) {
+        setOpen(false);
+        form.reset();
+        return toast({
+          title: "success",
+          description: "Account created successfully",
+        });
+      }
+    } catch (error) {
+      return toast({
+        title: "error",
+        description: "An error occurred",
+        variant: "destructive",
+      });
+    }
   }
 
   return (

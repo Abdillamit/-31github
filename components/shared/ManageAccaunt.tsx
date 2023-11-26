@@ -7,23 +7,37 @@ import { Dialog } from "@radix-ui/react-dialog";
 import { DialogContent } from "../ui/dialog";
 import LoginAccountForm from "../form/LoginAccountForm";
 import CreateAccountForm from "../form/CreateAccountForm";
-import { AccauntProps } from "@/types";
+import { AccountProps, AccountResponse } from "@/types";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function ManageAccount() {
   const [isDelete, setIsDelete] = useState<Boolean>(false);
   const [open, setOpen] = useState<Boolean>(false);
   const [state, setState] = useState<"login" | "create">("create");
-  const [account, setAccount] = useState<AccauntProps[]>([]);
+  const [accounts, setAccounts] = useState<AccountProps[]>([]);
+
+  const { data: session }: any = useSession();
 
   useEffect(() => {
     const getAllAccounts = async () => {
       try {
-        const { data } = await axios.get("/api/account");
+        const { data } = await axios.get<AccountResponse>(
+          `/api/account?uid=${session?.user?.uid}`
+        );
+        data.success && setAccounts(data.data);
+        console.log(data);
       } catch (error) {
-        console.log(error);
+        return toast({
+          title: "error",
+          description: "An error occurred",
+          variant: "destructive",
+        });
       }
     };
+
+    getAllAccounts();
   }, []);
 
   return (
@@ -37,36 +51,43 @@ export default function ManageAccount() {
           Who's Watching?
         </h1>
         <ul className={"flex p-0 my-12"}>
-          <li
-            onClick={() => {
-              setOpen(true);
-              setState("login");
-            }}
-            className={
-              "max-w-[200px] w-[155px] cursor-pointer155px flex flex-col items-center gap-3 min-w-[200px]"
-            }
-          >
-            <div className={"relative"}>
-              <div
-                className={
-                  "max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] object-cover w-[155px] h-[155px] relative"
-                }
-              >
-                <Image src={avatar} alt="Avatar Icon" fill />
-              </div>
-              {isDelete && (
+          {accounts.map((account) => (
+            <li
+              key={account._id}
+              onClick={() => {
+                setOpen(true);
+                setState("login");
+              }}
+              className={
+                "max-w-[200px] w-[155px] cursor-pointer155px flex flex-col items-center gap-3 min-w-[200px]"
+              }
+            >
+              <div className={"relative"}>
                 <div
-                  className={"absolute transform bottom-0 z-10 cursor-pointer"}
+                  className={
+                    "max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] object-cover w-[155px] h-[155px] relative"
+                  }
                 >
-                  <Trash2 className={"h-7 w-7 text-red-600"} />
+                  <Image src={avatar} alt="Avatar Icon" fill />
                 </div>
-              )}
-            </div>
-            <div className={"flex items-center  gap-2"}>
-              <span className={"font-bold font-mono text-xl"}>Abdillamit</span>
-              <LockKeyhole />
-            </div>
-          </li>
+                {isDelete && (
+                  <div
+                    className={
+                      "absolute transform bottom-0 z-10 cursor-pointer"
+                    }
+                  >
+                    <Trash2 className={"h-7 w-7 text-red-600"} />
+                  </div>
+                )}
+              </div>
+              <div className={"flex items-center  gap-2"}>
+                <span className={"font-bold font-mono text-xl"}>
+                  {account.name}
+                </span>
+                <LockKeyhole />
+              </div>
+            </li>
+          ))}
 
           <li
             onClick={() => {
@@ -92,7 +113,9 @@ export default function ManageAccount() {
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent>
             {state === "login" && <LoginAccountForm />}
-            {state === "create" && <CreateAccountForm />}
+            {state === "create" && (
+              <CreateAccountForm uid={session?.user?.uid} setOpen={setOpen} /> 
+            )}
           </DialogContent>
         </Dialog>
       </div>

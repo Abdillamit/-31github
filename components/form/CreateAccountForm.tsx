@@ -44,7 +44,7 @@ const CreateAccountForm = ({ uid, setOpen }: Props) => {
         setOpen(false);
         form.reset();
         return toast({
-          title: "success",
+          title: "Success",
           description: "Account created successfully",
         });
       }

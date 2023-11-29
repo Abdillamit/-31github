@@ -1,16 +1,16 @@
-import Image from "next/image";
 import avatar from "@/app/img/netflix-profile-pictures-5yup5hd2i60x7ew3.jpg";
-import { useEffect, useState } from "react";
-import { LockKeyhole, Trash2 } from "lucide-react";
-import { Button } from "../ui/button";
-import { Dialog } from "@radix-ui/react-dialog";
-import { DialogContent } from "../ui/dialog";
-import LoginAccountForm from "../form/LoginAccountForm";
-import CreateAccountForm from "../form/CreateAccountForm";
-import { AccountProps, AccountResponse } from "@/types";
-import axios from "axios";
-import { useSession } from "next-auth/react";
 import { toast } from "@/components/ui/use-toast";
+import { AccountProps, AccountResponse } from "@/types";
+import { Dialog } from "@radix-ui/react-dialog";
+import axios from "axios";
+import { LockKeyhole, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import CreateAccountForm from "../form/CreateAccountForm";
+import LoginAccountForm from "../form/LoginAccountForm";
+import { Button } from "../ui/button";
+import { DialogContent } from "../ui/dialog";
 
 export default function ManageAccount() {
   const [isDelete, setIsDelete] = useState<Boolean>(false);
@@ -24,7 +24,7 @@ export default function ManageAccount() {
     const getAllAccounts = async () => {
       try {
         const { data } = await axios.get<AccountResponse>(
-          `/api/account?uid=${session?.user?.uid}`
+          `/api/account?uid=${session.user.uid}`
         );
         data.success && setAccounts(data.data);
         console.log(data);
@@ -38,7 +38,7 @@ export default function ManageAccount() {
     };
 
     getAllAccounts();
-  }, []);
+  }, [session]);
 
   return (
     <div
@@ -114,7 +114,7 @@ export default function ManageAccount() {
           <DialogContent>
             {state === "login" && <LoginAccountForm />}
             {state === "create" && (
-              <CreateAccountForm uid={session?.user?.uid} setOpen={setOpen} /> 
+              <CreateAccountForm uid={session?.user?.uid} setOpen={setOpen} />
             )}
           </DialogContent>
         </Dialog>

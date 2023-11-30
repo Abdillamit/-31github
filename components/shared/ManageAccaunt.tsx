@@ -114,7 +114,11 @@ export default function ManageAccount() {
           <DialogContent>
             {state === "login" && <LoginAccountForm />}
             {state === "create" && (
-              <CreateAccountForm uid={session?.user?.uid} setOpen={setOpen} />
+              <CreateAccountForm
+                uid={session?.user?.uid}
+                setOpen={setOpen}
+                setAccounts={setAccounts}
+              />
             )}
           </DialogContent>
         </Dialog>

@@ -11,15 +11,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/components/ui/use-toast";
 import { createAccountSchema } from "@/lib/Validation";
 import { AccountResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import PinInput from "react-pin-input";
 import * as z from "zod";
-import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   uid: string;
@@ -46,6 +45,12 @@ const CreateAccountForm = ({ uid, setOpen }: Props) => {
         return toast({
           title: "Success",
           description: "Account created successfully",
+        });
+      } else {
+        return toast({
+          title: "error",
+          description: data.message,
+          variant: "destructive",
         });
       }
     } catch (error) {

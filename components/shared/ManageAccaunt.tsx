@@ -40,6 +40,38 @@ export default function ManageAccount() {
     getAllAccounts();
   }, [session]);
 
+  const onDelete = async (id: string) => {
+    try {
+      const isConfirmed = confirm(
+        "Are you sure you want to delete this account?"
+      );
+      if (isConfirmed) {
+        const { data } = await axios.delete<AccountResponse>(
+          `/api/account?id=${id}`
+        );
+        if (data.success) {
+          setAccounts(accounts.filter((account) => account._id !== id));
+          return toast({
+            title: "Success",
+            description: "Account deleted successfully",
+          });
+        } else {
+          return toast({
+            title: "Error",
+            description: data.message,
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error) {
+      return toast({
+        title: "Error",
+        description: "Error deleting",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div
       className={
@@ -55,6 +87,7 @@ export default function ManageAccount() {
             <li
               key={account._id}
               onClick={() => {
+                if (isDelete) return;
                 setOpen(true);
                 setState("login");
               }}
@@ -72,6 +105,7 @@ export default function ManageAccount() {
                 </div>
                 {isDelete && (
                   <div
+                    onClick={() => onDelete(account._id)}
                     className={
                       "absolute transform bottom-0 z-10 cursor-pointer"
                     }
@@ -89,17 +123,19 @@ export default function ManageAccount() {
             </li>
           ))}
 
-          <li
-            onClick={() => {
-              setOpen(true);
-              setState("create");
-            }}
-            className={
-              "border  bg-[#e5b109] font-bold text-xl border-black max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] w-[155px] h-[155px] cursor-pointer flex justify-center items-center"
-            }
-          >
-            Add accaunt
-          </li>
+          {accounts && accounts.length < 4 && (
+            <li
+              onClick={() => {
+                setOpen(true);
+                setState("create");
+              }}
+              className={
+                "border  bg-[#e5b109] font-bold text-xl border-black max-w-[200px] rounded min-w-[84px] max-h-[200px] min-h-[84px] w-[155px] h-[155px] cursor-pointer flex justify-center items-center"
+              }
+            >
+              Add accaunt
+            </li>
+          )}
         </ul>
         <Button
           onClick={() => setIsDelete((prev) => !prev)}
@@ -118,6 +154,7 @@ export default function ManageAccount() {
                 uid={session?.user?.uid}
                 setOpen={setOpen}
                 setAccounts={setAccounts}
+                accounts={setAccounts}
               />
             )}
           </DialogContent>

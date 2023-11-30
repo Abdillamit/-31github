@@ -13,9 +13,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { createAccountSchema } from "@/lib/Validation";
-import { AccountResponse } from "@/types";
+import { AccountProps, AccountResponse } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import PinInput from "react-pin-input";
 import * as z from "zod";
@@ -23,9 +24,11 @@ import * as z from "zod";
 interface Props {
   uid: string;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setAccounts: Dispatch<SetStateAction<AccountProps>[]>;
+  accounts: AccountProps[];
 }
 
-const CreateAccountForm = ({ uid, setOpen }: Props) => {
+const CreateAccountForm = ({ uid, setOpen, setAccounts, accounts }: Props) => {
   const form = useForm<z.infer<typeof createAccountSchema>>({
     resolver: zodResolver(createAccountSchema),
     defaultValues: { name: "", pin: "" },
@@ -42,6 +45,7 @@ const CreateAccountForm = ({ uid, setOpen }: Props) => {
       if (data.success) {
         setOpen(false);
         form.reset();
+        setAccounts([...accounts, data.data as AccountProps]);
         return toast({
           title: "Success",
           description: "Account created successfully",
